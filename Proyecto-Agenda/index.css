@@ -1,0 +1,19 @@
+h1.title {
+    text-align: center;
+}
+
+h2.title {
+    text-align: center;
+}
+
+.fadeFContainer {
+    display: none;
+}
+
+.contList {
+   display: none;
+}
+
+th, td {
+    text-align: center;
+}
