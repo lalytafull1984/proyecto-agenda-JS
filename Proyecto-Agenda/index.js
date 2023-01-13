@@ -75,12 +75,73 @@ contactTable.appendChild(tblHead);
 contactTable.appendChild(tblBody);
 tableContainer.appendChild(contactTable);
 
+
 //Función para añadir contactos a través del botón submit del formulario
 document.addEventListener("DOMContentLoaded", function () {
   document
     .getElementById("contactForm")
     .addEventListener("submit", createContact);
 });
+
+function LS_traerContactos() {
+  return JSON.parse(localStorage.getItem("Contacts")) || []
+}
+
+function LS_grabarContacto(contacto) {
+  let contactos = LS_traerContactos();
+  contactos.push(contacto)
+  localStorage.setItem("Contacts", JSON.stringify(contactos))
+}
+function dibujarContactosLS() {
+  const contactos = LS_traerContactos()
+  const listTable = document.querySelector(
+    "#contactTableContainer table tbody"
+  );
+  listTable.innerHTML = "";
+  contactos.forEach((c) => {
+    agregarContactoATabla(c)
+  })
+}
+function LS_borrarContacto(i) {
+  let contactos = LS_traerContactos()
+  contactos.splice(i, 1)
+  localStorage.setItem("Contacts", JSON.stringify(contactos))
+}
+function agregarContactoATabla(myContact) {
+  const newRow = document.createElement("tr");
+  const newTh = document.createElement("th");
+  newTh.scope = "row";
+  newTh.textContent = myContact.cName;
+  const newTd1 = document.createElement("td");
+  newTd1.textContent = myContact.cPhone;
+  const newTd2 = document.createElement("td");
+  newTd2.textContent = myContact.cEmail;
+  const newTd3 = document.createElement("td");
+  const deleteButton = document.createElement("button");
+  deleteButton.id = "delete";
+  deleteButton.classList = "btn btn-sm btn-primary adminbtn";
+  deleteButton.textContent = "Borrar";
+  deleteButton.addEventListener("click", (e) => {
+    e.target.parentNode.parentNode.remove();
+    let contactos = LS_traerContactos()
+    let i = contactos.findIndex((c) => {
+      if (c.cName === myContact.cName && c.cPhone === myContact.cPhone && c.cEmail === myContact.cEmail) {
+        return true
+      }
+    })
+    LS_borrarContacto(i)
+    dibujarContactosLS()
+  });
+  newTd3.appendChild(deleteButton);
+  newRow.appendChild(newTh);
+  newRow.appendChild(newTd1);
+  newRow.appendChild(newTd2);
+  newRow.appendChild(newTd3);
+  const listTable = document.querySelector(
+    "#contactTableContainer table tbody"
+  );
+  listTable.appendChild(newRow);
+}
 
 function createContact(e) {
   e.preventDefault();
@@ -97,57 +158,32 @@ function createContact(e) {
   let phone = document.getElementById("Phone").value;
   let email = document.getElementById("Email").value;
   let myContact = new Contact(name, phone, email);
-  let dataBase = JSON.parse(localStorage.getItem("Contact")) || [];
-  dataBase.push(myContact);
-  console.log(dataBase);
-  let dataBaseJSON = JSON.stringify(dataBase);
-  localStorage.setItem("Contact", dataBaseJSON);
 
-  addContacts();
+  // let dataBase = JSON.parse(localStorage.getItem("Contact")) || [];
+  // dataBase.push(myContact);
+  LS_grabarContacto(myContact);
+  //console.log(dataBase);
 
-  function addNewRow() {
-    const newRow = document.createElement("tr");
-    const newTh = document.createElement("th");
-    newTh.scope = "row";
-    newTh.textContent = myContact.cName;
-    const newTd1 = document.createElement("td");
-    newTd1.textContent = myContact.cPhone;
-    const newTd2 = document.createElement("td");
-    newTd2.textContent = myContact.cEmail;
-    const newTd3 = document.createElement("td");
-    const deleteButton = document.createElement("button");
-    deleteButton.id = "delete";
-    deleteButton.classList = "btn btn-sm btn-primary adminbtn";
-    deleteButton.textContent = "Borrar";
-    deleteButton.addEventListener("click", (e) => {
-      e.target.parentNode.parentNode.remove();
-    });
-    newTd3.appendChild(deleteButton);
-    newRow.appendChild(newTh);
-    newRow.appendChild(newTd1);
-    newRow.appendChild(newTd2);
-    newRow.appendChild(newTd3);
-    const listTable = document.querySelector(
-      "#contactTableContainer table tbody"
-    );
-    listTable.appendChild(newRow);
-  }
+  // let dataBaseJSON = JSON.stringify(dataBase);
+  // localStorage.setItem("Contact", dataBaseJSON);
+  dibujarContactosLS()
+  // addContacts();
 
-  function addContacts() {
-    for (let i = 0; i < dataBase.length; i++) {
-      addNewRow();
-      return;
-    }
-  }
+  // function addContacts() {
+  //   for (let i = 0; i < dataBase.length; i++) {
+  //     addNewRow();
+  //     return;
+  //   }
+  // }
 
   const form = document.getElementById("contactForm");
   form.reset();
 }
 
-document.addEventListener("DOMContentLoaded", function (e) {
-  let contactArray = JSON.parse(localStorage.getItem("Contact"));
-  contactArray.forEach((element) => {
-    addNewRow(element);
-    console.log("se está cargando el elemento");
-  });
-});
+// document.addEventListener("DOMContentLoaded", function (e) {
+//   let contactArray = JSON.parse(localStorage.getItem("Contact"));
+//   contactArray.forEach((element) => {
+//     addNewRow(element);
+//     console.log("se está cargando el elemento");
+//   });
+// });
