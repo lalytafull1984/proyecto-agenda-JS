@@ -23,7 +23,7 @@ function validLoginform(e) {
   if (user === "admin" && password === "admin123" && userType === "Admin") {
     divForm.classList.add("fadeFContainer");
     divContacts.classList.remove("contList");
-    localStorage.setItem("logueado", "admin")
+    localStorage.setItem("logueado", "admin");
     return;
   } else if (
     user === "viewer" &&
@@ -32,10 +32,10 @@ function validLoginform(e) {
   ) {
     divForm.classList.add("fadeFContainer");
     divContacts.classList.remove("contList");
-    localStorage.setItem("logueado", "usuario")
+    localStorage.setItem("logueado", "usuario");
     return;
   } else {
-    localStorage.setItem("logueado", "nologueado")
+    localStorage.setItem("logueado", "nologueado");
     alert("Datos incorrectos / No eres un usuario registrado");
   }
   this.submit();
@@ -75,7 +75,6 @@ contactTable.appendChild(tblHead);
 contactTable.appendChild(tblBody);
 tableContainer.appendChild(contactTable);
 
-
 //Función para añadir contactos a través del botón submit del formulario
 document.addEventListener("DOMContentLoaded", function () {
   document
@@ -84,28 +83,28 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function LS_traerContactos() {
-  return JSON.parse(localStorage.getItem("Contacts")) || []
+  return JSON.parse(localStorage.getItem("Contacts")) || [];
 }
 
 function LS_grabarContacto(contacto) {
   let contactos = LS_traerContactos();
-  contactos.push(contacto)
-  localStorage.setItem("Contacts", JSON.stringify(contactos))
+  contactos.push(contacto);
+  localStorage.setItem("Contacts", JSON.stringify(contactos));
 }
 function dibujarContactosLS() {
-  const contactos = LS_traerContactos()
+  const contactos = LS_traerContactos();
   const listTable = document.querySelector(
     "#contactTableContainer table tbody"
   );
   listTable.innerHTML = "";
   contactos.forEach((c) => {
-    agregarContactoATabla(c)
-  })
+    agregarContactoATabla(c);
+  });
 }
 function LS_borrarContacto(i) {
-  let contactos = LS_traerContactos()
-  contactos.splice(i, 1)
-  localStorage.setItem("Contacts", JSON.stringify(contactos))
+  let contactos = LS_traerContactos();
+  contactos.splice(i, 1);
+  localStorage.setItem("Contacts", JSON.stringify(contactos));
 }
 function agregarContactoATabla(myContact) {
   const newRow = document.createElement("tr");
@@ -123,14 +122,18 @@ function agregarContactoATabla(myContact) {
   deleteButton.textContent = "Borrar";
   deleteButton.addEventListener("click", (e) => {
     e.target.parentNode.parentNode.remove();
-    let contactos = LS_traerContactos()
+    let contactos = LS_traerContactos();
     let i = contactos.findIndex((c) => {
-      if (c.cName === myContact.cName && c.cPhone === myContact.cPhone && c.cEmail === myContact.cEmail) {
-        return true
+      if (
+        c.cName === myContact.cName &&
+        c.cPhone === myContact.cPhone &&
+        c.cEmail === myContact.cEmail
+      ) {
+        return true;
       }
-    })
-    LS_borrarContacto(i)
-    dibujarContactosLS()
+    });
+    LS_borrarContacto(i);
+    dibujarContactosLS();
   });
   newTd3.appendChild(deleteButton);
   newRow.appendChild(newTh);
@@ -159,31 +162,21 @@ function createContact(e) {
   let email = document.getElementById("Email").value;
   let myContact = new Contact(name, phone, email);
 
-  // let dataBase = JSON.parse(localStorage.getItem("Contact")) || [];
-  // dataBase.push(myContact);
   LS_grabarContacto(myContact);
-  //console.log(dataBase);
 
-  // let dataBaseJSON = JSON.stringify(dataBase);
-  // localStorage.setItem("Contact", dataBaseJSON);
-  dibujarContactosLS()
-  // addContacts();
-
-  // function addContacts() {
-  //   for (let i = 0; i < dataBase.length; i++) {
-  //     addNewRow();
-  //     return;
-  //   }
-  // }
+  dibujarContactosLS();
 
   const form = document.getElementById("contactForm");
   form.reset();
 }
 
-// document.addEventListener("DOMContentLoaded", function (e) {
-//   let contactArray = JSON.parse(localStorage.getItem("Contact"));
-//   contactArray.forEach((element) => {
-//     addNewRow(element);
-//     console.log("se está cargando el elemento");
-//   });
-// });
+//Función para cerrar sesión
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("logOut").addEventListener("click", userLogOut);
+});
+
+function userLogOut() {
+  localStorage.removeItem("logueado");
+  localStorage.setItem("logueado", "nologueado");
+  location.reload();
+}
