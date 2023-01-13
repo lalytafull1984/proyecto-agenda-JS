@@ -1,35 +1,43 @@
 //Validación de formulario de Login
+const divForm = document.getElementById("formContainer");
+const divContacts = document.getElementById("contacts");
+
 document.addEventListener("DOMContentLoaded", function () {
   document
     .getElementById("loginForm")
     .addEventListener("submit", validLoginform);
+
+  if (localStorage.getItem("logueado") !== "nologueado") {
+    divForm.classList.add("fadeFContainer");
+    divContacts.classList.remove("contList");
+    return;
+  }
 });
 
 function validLoginform(e) {
   e.preventDefault();
+
   let user = document.getElementById("UserName").value;
   let password = document.getElementById("Password").value;
   let userType = document.getElementById("UserType").value;
-  localStorage.setItem("user", JSON.stringify(user));
-  localStorage.setItem("password", JSON.stringify(password));
-  localStorage.setItem("userType", JSON.stringify(userType));
   if (user === "admin" && password === "admin123" && userType === "Admin") {
-    const divForm = document.getElementById("formContainer");
-    const divContacts = document.getElementById("contacts");
     divForm.classList.add("fadeFContainer");
     divContacts.classList.remove("contList");
+    localStorage.setItem("logueado", "admin")
     return;
   } else if (
     user === "viewer" &&
     password === "v123" &&
     userType === "Usuario"
   ) {
-    const divForm = document.getElementById("formContainer");
-    const divContacts = document.getElementById("contacts");
     divForm.classList.add("fadeFContainer");
     divContacts.classList.remove("contList");
+    localStorage.setItem("logueado", "usuario")
     return;
-  } else alert("Datos incorrectos / No eres un usuario registrado");
+  } else {
+    localStorage.setItem("logueado", "nologueado")
+    alert("Datos incorrectos / No eres un usuario registrado");
+  }
   this.submit();
 }
 
